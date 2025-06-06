@@ -6,7 +6,7 @@ const ProductCard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://dummyjson.com/products")
+    fetch("https://dummyjson.com/products?limit=100")
       .then(response => response.json())
       .then(data => {
         setData(data.products);
@@ -38,8 +38,8 @@ const ProductCard = () => {
           <div className="product-inner-content">
             <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">Our Products</h1>
             <div className="product-cards grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {data.slice(0,4).map((e) => (
-                <Link to={`/product/${createSlug(e.title)}`} key={e.id}>
+              {data.slice(0,8).map((e) => (
+                <Link to={`/shop/${createSlug(e.title)}`} key={e.id}>
                   <div 
                     className="each-product-card bg-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-200 hover:border-gray-300"
                   >

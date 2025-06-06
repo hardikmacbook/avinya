@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { Home, ChevronRight } from "lucide-react";
 
 const ProductDetails = () => {
   const { title } = useParams();
@@ -71,83 +72,107 @@ const ProductDetails = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
-      <div className="bg-white rounded-xl shadow-lg p-6">
-        <div className="flex flex-col md:flex-row gap-8">
-          {/* Product Images Section */}
-          <div className="md:w-1/2">
-            <div className="mb-4 h-80 flex items-center justify-center bg-gray-50 rounded-lg">
-              <img 
-                src={product.images[currentImage]} 
-                alt={product.title} 
-                className="max-h-full max-w-full object-contain"
-              />
-            </div>
-            
-            {/* Thumbnail Images */}
-            <div className="flex gap-2 overflow-x-auto pb-2">
-              {product.images.map((image, index) => (
-                <div 
-                  key={index} 
-                  className={`w-20 h-20 flex-shrink-0 cursor-pointer border-2 rounded ${currentImage === index ? 'border-red-900' : 'border-gray-200'}`}
-                  onClick={() => setCurrentImage(index)}
-                >
-                  <img 
-                    src={image} 
-                    alt={`${product.title} thumbnail ${index + 1}`} 
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          {/* Product Details Section */}
-          <div className="md:w-1/2">
-            <div className="flex justify-between items-start">
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">{product.title}</h1>
-              <div className="flex items-center bg-yellow-100 px-2 py-1 rounded">
-                <span className="text-yellow-500 mr-1">★</span>
-                <span className="font-medium">{product.rating}</span>
+    <div className="min-h-screen bg-gradient-to-br from-[#f8f3e9] to-[#f0e6d2]">
+      {/* Breadcrumb */}
+      <div className="bg-white shadow-sm border-b border-[#d2af6f]/30">
+        <div className="container mx-auto max-w-7xl px-4 py-3">
+          <nav className="flex items-center space-x-2 text-sm text-gray-600">
+            <Link to="/" className="flex items-center hover:text-[#8b2727] transition-colors">
+              <Home className="w-4 h-4 mr-1" />
+              Home
+            </Link>
+            <ChevronRight className="w-4 h-4" />
+            <Link to="/shop" className="hover:text-[#8b2727] transition-colors">
+              Shop
+            </Link>
+            <ChevronRight className="w-4 h-4" />
+            <Link to={`/shop?category=${product.category}`} className="hover:text-[#8b2727] transition-colors">
+              {product.category.charAt(0).toUpperCase() + product.category.slice(1)}
+            </Link>
+            <ChevronRight className="w-4 h-4" />
+            <span className="text-[#8b2727] font-medium truncate max-w-[200px]">{product.title}</span>
+          </nav>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="flex flex-col md:flex-row gap-8">
+            {/* Product Images Section */}
+            <div className="md:w-1/2">
+              <div className="mb-4 h-80 flex items-center justify-center bg-gray-50 rounded-lg">
+                <img 
+                  src={product.images[currentImage]} 
+                  alt={product.title} 
+                  className="max-h-full max-w-full object-contain"
+                />
+              </div>
+              
+              {/* Thumbnail Images */}
+              <div className="flex gap-2 overflow-x-auto pb-2">
+                {product.images.map((image, index) => (
+                  <div 
+                    key={index} 
+                    className={`w-20 h-20 flex-shrink-0 cursor-pointer border-2 rounded ${currentImage === index ? 'border-red-900' : 'border-gray-200'}`}
+                    onClick={() => setCurrentImage(index)}
+                  >
+                    <img 
+                      src={image} 
+                      alt={`${product.title} thumbnail ${index + 1}`} 
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                ))}
               </div>
             </div>
             
-            <div className="text-sm text-gray-500 mb-4">{product.category}</div>
-            
-            <p className="text-gray-700 mb-6">{product.description}</p>
-            
-            <div className="mb-6">
-              <div className="flex items-baseline">
-                <span className="text-3xl font-bold text-red-900">${product.price}</span>
-                {product.discountPercentage > 0 && (
-                  <span className="ml-2 text-sm text-green-600">{product.discountPercentage}% off</span>
+            {/* Product Details Section */}
+            <div className="md:w-1/2">
+              <div className="flex justify-between items-start">
+                <h1 className="text-3xl font-bold text-gray-800 mb-2">{product.title}</h1>
+                <div className="flex items-center bg-yellow-100 px-2 py-1 rounded">
+                  <span className="text-yellow-500 mr-1">★</span>
+                  <span className="font-medium">{product.rating}</span>
+                </div>
+              </div>
+              
+              <div className="text-sm text-gray-500 mb-4">{product.category}</div>
+              
+              <p className="text-gray-700 mb-6">{product.description}</p>
+              
+              <div className="mb-6">
+                <div className="flex items-baseline">
+                  <span className="text-3xl font-bold text-red-900">${product.price}</span>
+                  {product.discountPercentage > 0 && (
+                    <span className="ml-2 text-sm text-green-600">{product.discountPercentage}% off</span>
+                  )}
+                </div>
+                
+                {product.stock <= 10 && (
+                  <div className="text-sm text-orange-600 mt-1">Only {product.stock} left in stock!</div>
                 )}
               </div>
               
-              {product.stock <= 10 && (
-                <div className="text-sm text-orange-600 mt-1">Only {product.stock} left in stock!</div>
-              )}
-            </div>
-            
-            <div className="flex items-center gap-4 mb-6">
-              <div className="flex items-center border rounded-lg">
-                <button className="px-3 py-1 text-xl">-</button>
-                <span className="px-4 py-1 border-x">1</span>
-                <button className="px-3 py-1 text-xl">+</button>
+              <div className="flex items-center gap-4 mb-6">
+                <div className="flex items-center border rounded-lg">
+                  <button className="px-3 py-1 text-xl">-</button>
+                  <span className="px-4 py-1 border-x">1</span>
+                  <button className="px-3 py-1 text-xl">+</button>
+                </div>
+                
+                <button className="bg-red-900 hover:bg-black text-white px-6 py-2 rounded-lg transition-colors duration-200">
+                  Add to Cart
+                </button>
               </div>
               
-              <button className="bg-red-900 hover:bg-black text-white px-6 py-2 rounded-lg transition-colors duration-200">
-                Add to Cart
-              </button>
-            </div>
-            
-            <div className="border-t pt-4">
-              <div className="flex gap-4 text-sm">
-                <div>
-                  <span className="font-medium">Brand:</span> {product.brand}
-                </div>
-                <div>
-                  <span className="font-medium">Stock:</span> {product.stock}
+              <div className="border-t pt-4">
+                <div className="flex gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Brand:</span> {product.brand}
+                  </div>
+                  <div>
+                    <span className="font-medium">Stock:</span> {product.stock}
+                  </div>
                 </div>
               </div>
             </div>

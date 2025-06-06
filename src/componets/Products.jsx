@@ -20,7 +20,7 @@ const Products = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg text-gray-600">Loading products...</div>
+        <div className="ttext-xl text-[#8b2727] font-medium">Loading products...</div>
       </div>
     );
   }
@@ -37,7 +37,6 @@ const Products = () => {
                   key={e.id} 
                   className="each-product-card bg-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-200 hover:border-gray-300"
                 >
-                  
                   <div className="products-img w-full h-48 flex items-center justify-center mb-4 bg-gray-50 rounded-lg">
                     <img
                       className="max-w-full max-h-full object-contain"
@@ -45,7 +44,6 @@ const Products = () => {
                       alt={e.title}
                     />
                   </div>
-                  
                   
                   <div className="product-content text-left">
                     <h3 className="text-lg font-semibold text-gray-800 mb-2 leading-tight">

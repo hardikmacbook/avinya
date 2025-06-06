@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const ProductCard = () => {
+const Shop = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,9 +36,9 @@ const ProductCard = () => {
       <div className="container mx-auto max-w-[1200px] w-full px-4 py-6">
         <div className="product-inner">
           <div className="product-inner-content">
-            <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">Our Products</h1>
+            <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">All Products</h1>
             <div className="product-cards grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {data.slice(0,4).map((e) => (
+              {data.map((e) => (
                 <Link to={`/product/${createSlug(e.title)}`} key={e.id}>
                   <div 
                     className="each-product-card bg-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-200 hover:border-gray-300"
@@ -88,4 +88,4 @@ const ProductCard = () => {
   );
 };
 
-export default ProductCard;
+export default Shop;

@@ -10,10 +10,12 @@ import {
 } from "@clerk/clerk-react";
 import AvinyaLogo from "../assets/images/logo.png";
 import SetAddress from "./SetAddress";
+import { useCart } from "../context/CartContext";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { cartCount } = useCart();
 
   const navItems = [
     { name: "home", path: "/" },
@@ -45,7 +47,7 @@ const Navbar = () => {
     <>
       <div className={`fixed top-0 w-full transition-all duration-300 ease-in-out z-[100] ${
         isScrolled 
-          ? 'bg-black/20 backdrop-blur-md shadow-lg border-b border-white/20' 
+          ? 'bg-white/15 backdrop-blur-md shadow-lg border-b border-white/20' 
           : 'bg-white shadow-xl'
       }`}>
         <div className="mx-auto max-w-[1200px] w-full px-4 sm:px-6 lg:px-8 relative z-[101]">
@@ -92,7 +94,7 @@ const Navbar = () => {
                   <Link to={"/cart"} className="transition-transform duration-300 group-hover:scale-110">
                     <FaLuggageCart className="text-2xl" />
                     <span className="text-xml px-2 rounded-full absolute bg-[#8b2727] -top-3 -right-5 text-white min-w-[20px] h-5 flex items-center justify-center transition-all duration-300 group-hover:bg-[#d2af6f] group-hover:text-black">
-                      0
+                      {cartCount}
                     </span>
                   </Link>
                 </div>

@@ -7,23 +7,25 @@ import Cart from "./pages/Cart"
 import Navbar from "./componets/Navbar"
 import ProductDetails from "./pages/ProductDetail"
 import Shop from "./pages/Shop"
+import { CartProvider } from "./context/CartContext"
 
 function App() {
-
   return (
     <>
-      <BrowserRouter>
-      <Navbar/>
-        <Routes>
-          <Route path="/" element={<Home/>}/>
-          <Route path="/about" element={<About/>}/>
-          <Route path="/shop" element={<Shop/>}/>
-          <Route path="/shop/:title" element={<ProductDetails/>}/>
-          <Route path="/contact" element={<Contact/>}/>
-          <Route path="/cart" element={<Cart/>}/>
-          <Route path="*" element={<Error/>}/>
-        </Routes>
-      </BrowserRouter>
+      <CartProvider>
+        <BrowserRouter>
+          <Navbar/>
+          <Routes>
+            <Route path="/" element={<Home/>}/>
+            <Route path="/about" element={<About/>}/>
+            <Route path="/shop" element={<Shop/>}/>
+            <Route path="/shop/:title" element={<ProductDetails/>}/>
+            <Route path="/contact" element={<Contact/>}/>
+            <Route path="/cart" element={<Cart/>}/>
+            <Route path="*" element={<Error/>}/>
+          </Routes>
+        </BrowserRouter>
+      </CartProvider>
     </>
   )
 }

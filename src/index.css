@@ -24,6 +24,11 @@
 
 
 
+.swiper-pagination{
+  display: none;
+}
+
+
 /* Custom styles for the Swiper container */
 
 /* Add after your existing styles */

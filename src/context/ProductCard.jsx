@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useCart } from "./CartContext";
 
 const ProductCard = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     fetch("https://dummyjson.com/products?limit=100")
@@ -23,6 +25,13 @@ const ProductCard = () => {
     return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   };
 
+  // Add to cart function
+  const handleAddToCart = (e, product) => {
+    e.preventDefault(); // Prevent navigation when clicking the button
+    e.stopPropagation(); // Stop event bubbling
+    addToCart(product);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -38,47 +47,57 @@ const ProductCard = () => {
           <div className="product-inner-content">
             <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">Our Products</h1>
             <div className="product-cards grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {data.slice(0,8).map((e) => (
-                <Link to={`/shop/${createSlug(e.title)}`} key={e.id}>
-                  <div 
-                    className="each-product-card bg-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-200 hover:border-gray-300"
+              {data.slice(0,8).map((product) => (
+                <div 
+                  key={product.id}
+                  className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-[#d2af6f]/20 hover:border-[#8b2727]/50 p-6"
+                >
+                  <Link 
+                    to={`/shop/${createSlug(product.title)}`}
+                    className="w-full h-48 mb-4 bg-gradient-to-br from-[#f8f3e9] to-[#f0e6d2] rounded-xl flex items-center justify-center overflow-hidden"
                   >
-                    <div className="products-img w-full h-48 flex items-center justify-center mb-4 bg-gray-50 rounded-lg">
-                      <img
-                        className="max-w-full max-h-full object-contain"
-                        src={e.images[0]}
-                        alt={e.title}
-                      />
+                    <img
+                      className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                      src={product.images[0]}
+                      alt={product.title}
+                    />
+                  </Link>
+                  
+                  <div>
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="text-lg font-semibold text-gray-800 group-hover:text-[#8b2727] transition-colors leading-tight">
+                        {product.title.length > 25 ? product.title.slice(0, 25) + "..." : product.title}
+                      </h3>
+                      <div className="flex items-center bg-[#f8f3e9] px-2 py-1 rounded-full">
+                        <span className="text-[#d2af6f]">★</span>
+                        <span className="text-sm text-gray-700 ml-1 font-medium">{product.rating}</span>
+                      </div>
                     </div>
                     
-                    <div className="product-content text-left">
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2 leading-tight">
-                        {e.title.length > 20 ? e.title.slice(0, 20) + "..." : e.title}
-                      </h3>
-                      
-                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                        {e.description.length > 60 ? e.description.slice(0, 60) + "..." : e.description}
-                      </p>
-                      
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-xl font-bold text-green-600">${e.price}</span>
-                        <div className="flex items-center">
-                          <span className="text-yellow-400">★</span>
-                          <span className="text-sm text-gray-600 ml-1">{e.rating}</span>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                          {e.category}
-                        </span>
-                        <button className="bg-red-900 hover:bg-black text-white text-sm px-4 py-2 rounded-lg transition-colors duration-200 cursor-pointer">
-                          add to cart
-                        </button>
-                      </div>
+                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                      {product.description.length > 80 ? product.description.slice(0, 80) + "..." : product.description}
+                    </p>
+                    
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-2xl font-bold text-[#8b2727]">
+                        ${product.price}
+                      </span>
+                      <span className="text-xs text-[#8b2727] bg-[#f8f3e9] px-3 py-1 rounded-full font-medium">
+                        {product.category}
+                      </span>
                     </div>
+                  
+                    <button 
+                      onClick={(e) => handleAddToCart(e, product)}
+                      className="w-full bg-gradient-to-r from-[#8b2727] to-[#a83333] hover:from-[#6a1d1d] hover:to-[#8b2727] text-white font-medium py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 group-hover:shadow-lg cursor-pointer"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                      </svg>
+                      Add to Cart
+                    </button>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           </div>

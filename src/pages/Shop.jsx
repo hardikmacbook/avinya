@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Search, Filter, Grid, List, ChevronDown, Star, ShoppingCart, Home, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+
+
 
 const Shop = () => {
   const [data, setData] = useState([]);
@@ -15,6 +18,14 @@ const Shop = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(12);
   const [categories, setCategories] = useState([]);
+  const { addToCart } = useCart();
+
+   // Add to cart function
+   const handleAddToCart = (e, product) => {
+    e.preventDefault(); // Prevent navigation when clicking the button
+    e.stopPropagation(); // Stop event bubbling
+    addToCart(product);
+  };
 
   useEffect(() => {
     fetch("https://dummyjson.com/products?limit=100")
@@ -114,13 +125,6 @@ const Shop = () => {
       </div>
 
       <div className="container mx-auto max-w-7xl px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#8b2727] to-[#d2af6f] bg-clip-text text-transparent mb-2">
-            Discover Amazing Products
-          </h1>
-          <p className="text-gray-700 text-lg">Find exactly what you're looking for</p>
-        </div>
 
         {/* Search and Filter Bar */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-[#d2af6f]/20">
@@ -140,7 +144,7 @@ const Shop = () => {
             {/* Filter Toggle */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-4 py-3 bg-[#f8f3e9] text-[#8b2727] rounded-xl hover:bg-[#f0e6d2] transition-colors"
+              className="flex items-center gap-2 px-4 py-3 bg-[#8b2727] text-white rounded-xl hover:bg-[#d2af6f] transition-colors hover:text-black cursor-pointer"
             >
               <Filter className="w-5 h-5" />
               Filters
@@ -151,13 +155,13 @@ const Shop = () => {
             <div className="flex border border-gray-200 rounded-xl overflow-hidden">
               <button
                 onClick={() => setViewMode("grid")}
-                className={`p-3 ${viewMode === "grid" ? 'bg-[#8b2727] text-white' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'} transition-colors`}
+                className={`p-3 ${viewMode === "grid" ? 'bg-[#8b2727] text-white' : 'bg-gray-50 text-gray-600 hover:bg-gray-100 cursor-pointer'} transition-colors`}
               >
                 <Grid className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`p-3 ${viewMode === "list" ? 'bg-[#8b2727] text-white' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'} transition-colors`}
+                className={`p-3 ${viewMode === "list" ? 'bg-[#8b2727] text-white' : 'bg-gray-50 text-gray-600 hover:bg-gray-100 cursor-pointer'} transition-colors`}
               >
                 <List className="w-5 h-5" />
               </button>
@@ -228,7 +232,7 @@ const Shop = () => {
               <div className="flex justify-between items-center mt-4">
                 <button
                   onClick={clearFilters}
-                  className="text-[#8b2727] hover:text-[#6a1d1d] font-medium"
+                  className="text-white p-2 rounded-2xl hover:text-black hover:bg-[#d2af6f] font-medium bg-[#8b2727] cursor-pointer"
                 >
                   Clear All Filters
                 </button>
@@ -246,53 +250,59 @@ const Shop = () => {
           : 'space-y-4'
         } mb-8`}>
           {currentProducts.map((product) => (
-            <Link 
-              to={`/shop/${createSlug(product.title)}`}
+            <div 
               key={product.id}
-              className={`group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-[#d2af6f]/20 hover:border-[#d2af6f]/50 ${viewMode === 'list' ? 'flex p-4' : 'p-6'}`}
+              className={`bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-[#d2af6f]/20 hover:border-[#8b2727] ${viewMode === 'list' ? 'flex p-4' : 'p-6'}`}
             >
-                <div className={`${viewMode === 'list' ? 'w-48 h-32 flex-shrink-0 mr-6' : 'w-full h-48 mb-4'} bg-gradient-to-br from-[#f8f3e9] to-[#f0e6d2] rounded-xl flex items-center justify-center overflow-hidden`}>
-                  <img
-                    className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300"
-                    src={product.images[0]}
-                    alt={product.title}
-                  />
+              {/* Clickable Image */}
+              <Link 
+                to={`/shop/${createSlug(product.title)}`}
+                className={`${viewMode === 'list' ? 'w-48 h-32 flex-shrink-0 mr-6' : 'w-full h-48 mb-4'} bg-gradient-to-br from-[#f8f3e9] to-[#f0e6d2] rounded-xl flex items-center justify-center overflow-hidden group`}
+              >
+                <img
+                  className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                  src={product.images[0]}
+                  alt={product.title}
+                />
+              </Link>
+              
+              {/* Non-clickable Product Info */}
+              <div className={`${viewMode === 'list' ? 'flex-1' : ''}`}>
+                <div className="flex items-start justify-between mb-2">
+                  <h3 className="text-lg font-semibold text-gray-800 leading-tight">
+                    {product.title.length > (viewMode === 'list' ? 50 : 25) 
+                      ? product.title.slice(0, viewMode === 'list' ? 50 : 25) + "..." 
+                      : product.title}
+                  </h3>
+                  <div className="flex items-center bg-[#f8f3e9] px-2 py-1 rounded-full">
+                    <Star className="w-4 h-4 text-[#8b2727  ] fill-current" />
+                    <span className="text-sm text-gray-700 ml-1 font-medium">{product.rating}</span>
+                  </div>
                 </div>
                 
-                <div className={`${viewMode === 'list' ? 'flex-1' : ''}`}>
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="text-lg font-semibold text-gray-800 group-hover:text-[#8b2727] transition-colors leading-tight">
-                      {product.title.length > (viewMode === 'list' ? 50 : 25) 
-                        ? product.title.slice(0, viewMode === 'list' ? 50 : 25) + "..." 
-                        : product.title}
-                    </h3>
-                    <div className="flex items-center bg-[#f8f3e9] px-2 py-1 rounded-full">
-                      <Star className="w-4 h-4 text-[#d2af6f] fill-current" />
-                      <span className="text-sm text-gray-700 ml-1 font-medium">{product.rating}</span>
-                    </div>
-                  </div>
-                  
-                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                    {product.description.length > (viewMode === 'list' ? 120 : 80) 
-                      ? product.description.slice(0, viewMode === 'list' ? 120 : 80) + "..." 
-                      : product.description}
-                  </p>
-                  
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-2xl font-bold text-[#8b2727]">
-                      ${product.price}
-                    </span>
-                    <span className="text-xs text-[#8b2727] bg-[#f8f3e9] px-3 py-1 rounded-full font-medium">
-                      {product.category}
-                    </span>
-                  </div>
+                <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                  {product.description.length > (viewMode === 'list' ? 120 : 80) 
+                    ? product.description.slice(0, viewMode === 'list' ? 120 : 80) + "..." 
+                    : product.description}
+                </p>
                 
-                  <button className="w-full bg-gradient-to-r from-[#8b2727] to-[#a83333] hover:from-[#6a1d1d] hover:to-[#8b2727] text-white font-medium py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 group-hover:shadow-lg cursor-pointer">
-                    <ShoppingCart className="w-4 h-4" />
-                    Add to Cart
-                  </button>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-2xl font-bold text-[#8b2727]">
+                    ${product.price}
+                  </span>
+                  <span className="text-xs text-[#8b2727] bg-[#f8f3e9] px-3 py-1 rounded-full font-medium">
+                    {product.category}
+                  </span>
                 </div>
-            </Link>
+              
+                <button 
+                onClick={(e) => handleAddToCart(e, product)}
+                className="w-full bg-gradient-to-r from-[#8b2727] to-[#a83333] hover:from-[#6a1d1d] hover:to-[#8b2727] text-white font-medium py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 hover:shadow-lg cursor-pointer">
+                  <ShoppingCart className="w-4 h-4" />
+                  Add to Cart
+                </button>
+              </div>
+            </div>
           ))}
         </div>
 
@@ -302,7 +312,7 @@ const Shop = () => {
             <button
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
-              className="px-4 py-2 bg-white border border-[#d2af6f]/30 rounded-lg hover:bg-[#f8f3e9] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 bg-[#d2af6f] border border-[#d2af6f]/30 rounded-lg hover:bg-[#8b2727] disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer hover:text-white"
             >
               Previous
             </button>
@@ -317,7 +327,7 @@ const Shop = () => {
                   onClick={() => paginate(pageNumber)}
                   className={`px-4 py-2 border rounded-lg transition-colors ${currentPage === pageNumber
                       ? 'bg-[#8b2727] text-white border-[#8b2727]'
-                      : 'bg-white border-[#d2af6f]/30 hover:bg-[#f8f3e9]'
+                      : 'bg-white border-[#d2af6f]/30 hover:bg-[#8b2727] hover:text-white cursor-pointer'
                   }`}
                 >
                   {pageNumber}
@@ -328,13 +338,12 @@ const Shop = () => {
             <button
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 bg-white border border-[#d2af6f]/30 rounded-lg hover:bg-[#f8f3e9] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 bg-[#d2af6f] border border-[#d2af6f]/30 rounded-lg hover:bg-[#8b2727] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
             >
               Next
             </button>
           </div>
         )}
-
 
         {/* No Results */}
         {filteredData.length === 0 && (

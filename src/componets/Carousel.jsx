@@ -167,7 +167,7 @@ const Carousel = () => {
         {slideData.map((_, index) => (
           <button 
             key={index} 
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${activeIndex === index ? 'bg-white scale-125' : 'bg-white/30'}`}
+            className={`w-3 h-3 rounded-full transition-all duration-300 cursor-pointer ${activeIndex === index ? 'bg-[#d2af6f] scale-125' : 'bg-[#8b2727]'}`}
             onClick={() => document.querySelector('.swiper-pagination-bullet:nth-child(' + (index + 1) + ')').click()}
           />
         ))}

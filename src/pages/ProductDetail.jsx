@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Home, ChevronRight } from "lucide-react";
+import { useCart } from "../context/CartContext";
+
 
 const ProductDetails = () => {
   const { title } = useParams();
@@ -8,6 +10,14 @@ const ProductDetails = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentImage, setCurrentImage] = useState(0);
+  const { addToCart } = useCart();
+
+  // Add to cart function
+  const handleAddToCart = (e, product) => {
+    e.preventDefault(); // Prevent navigation when clicking the button
+    e.stopPropagation(); // Stop event bubbling
+    addToCart(product);
+  };
 
   // First fetch all products
   useEffect(() => {
@@ -160,7 +170,9 @@ const ProductDetails = () => {
                   <button className="px-3 py-1 text-xl">+</button>
                 </div>
                 
-                <button className="bg-red-900 hover:bg-black text-white px-6 py-2 rounded-lg transition-colors duration-200">
+                <button 
+                onClick={(e) => handleAddToCart(e, product)}
+                className="bg-red-900 hover:bg-black text-white px-6 py-2 rounded-lg transition-colors duration-200">
                   Add to Cart
                 </button>
               </div>
